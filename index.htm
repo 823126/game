@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <title>test</title>
+  <script>
+    addEventListener("DOMContentLoaded", function() {
+      var GRID_SIZE = 64;
+      var grid = [
+        [0, 1, 0, 1, 0, 1],
+        [1, 0, 1, 0, 1, 0],
+        [0, 1, 0, 1, 0, 1]
+      ]
+      var canvas = document.getElementsByTagName("canvas")[0];
+      var context = canvas.getContext("2d");
+      var heightLoop = ~~(canvas.height / GRID_SIZE) + 1;
+      var widthLoop = ~~(canvas.width / GRID_SIZE) + 1;
+      for (var i = 0; i < heightLoop; i += 1) {
+        for (var j = 0; j < widthLoop; j += 1) {
+          context.fillStyle = (j+i)%2 === 0 ? "#f00" : "#00f";
+          context.fillRect(
+            j * GRID_SIZE,
+            i * GRID_SIZE,
+            GRID_SIZE,
+            GRID_SIZE)
+        }
+      }
+    })
+  </script>
+</head>
+<body>
+  <canvas width="640" height="480"></canvas>
+</body>
+</html>
