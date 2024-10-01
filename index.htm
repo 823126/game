@@ -6,7 +6,7 @@
     addEventListener("DOMContentLoaded", function() {
       var GRID_SIZE = 64;
       var grid = [
-        [0, 1, 0, 1, 0, 1],
+        [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
         [1, 0, 1, 0, 1, 0],
         [0, 1, 0, 1, 0, 1]
       ];
@@ -14,24 +14,29 @@
       cameraY = 0;
       var canvas = document.getElementsByTagName("canvas")[0];
       var context = canvas.getContext("2d");
-      var heightLoop = ~~(canvas.height / GRID_SIZE) + 1;
-      var widthLoop = ~~(canvas.width / GRID_SIZE) + 1;
       var timeFunction = window.requestAnimationFrame || setTimeout;
+      var width = canvas.width;
+      var height = canvas.height;
+      var widthLoop = ~~(width / GRID_SIZE) + 1;
+      var heightLoop = ~~(height / GRID_SIZE) + 1;
       function frame() {
-        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.clearRect(0, 0, width, height);
         if (arrowUp) cameraY += 1;
         if (arrowDown) cameraY -= 1;
         if (arrowLeft) cameraX += 1;
         if (arrowRight) cameraX -= 1;
+        if (cameraY < 0) cameraY = 0;
+        if (cameraX < 0) cameraX = 0;
         for (var i = 0; i < heightLoop; i += 1) {
-          if (grid[i] === undefined) break;
+          var row = grid[i + ~~(cameraY / GRID_SIZE)];
+          if (row === undefined) break;
           for (var j = 0; j < widthLoop; j += 1) {
-            var tile = grid[i][j];
+            var tile = row[j + ~~(cameraX / GRID_SIZE)];
             if (tile === undefined) break;
             context.fillStyle = tile ? "#f00" : "#00f";
             context.fillRect(
-              j * GRID_SIZE + cameraX,
-              i * GRID_SIZE + cameraY,
+              (j + ~~(cameraX / GRID_SIZE)) * GRID_SIZE - cameraX,
+              (i + ~~(cameraY / GRID_SIZE)) * GRID_SIZE - cameraY,
               GRID_SIZE,
               GRID_SIZE
             )
