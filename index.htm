@@ -9,25 +9,77 @@
         [0, 1, 0, 1, 0, 1],
         [1, 0, 1, 0, 1, 0],
         [0, 1, 0, 1, 0, 1]
-      ]
+      ];
+      cameraX = 0;
+      cameraY = 0;
       var canvas = document.getElementsByTagName("canvas")[0];
       var context = canvas.getContext("2d");
       var heightLoop = ~~(canvas.height / GRID_SIZE) + 1;
       var widthLoop = ~~(canvas.width / GRID_SIZE) + 1;
-      for (var i = 0; i < heightLoop; i += 1) {
-        for (var j = 0; j < widthLoop; j += 1) {
-          context.fillStyle = (j+i)%2 === 0 ? "#f00" : "#00f";
-          context.fillRect(
-            j * GRID_SIZE,
-            i * GRID_SIZE,
-            GRID_SIZE,
-            GRID_SIZE)
+      var timeFunction = window.requestAnimationFrame || setTimeout;
+      function frame() {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        if (arrowUp) cameraY += 1;
+        if (arrowDown) cameraY -= 1;
+        if (arrowLeft) cameraX += 1;
+        if (arrowRight) cameraX -= 1;
+        for (var i = 0; i < heightLoop; i += 1) {
+          if (grid[i] === undefined) break;
+          for (var j = 0; j < widthLoop; j += 1) {
+            var tile = grid[i][j];
+            if (tile === undefined) break;
+            context.fillStyle = tile ? "#f00" : "#00f";
+            context.fillRect(
+              j * GRID_SIZE + cameraX,
+              i * GRID_SIZE + cameraY,
+              GRID_SIZE,
+              GRID_SIZE
+            )
+          }
         }
+        timeFunction(frame);
       }
+      frame();
+      var arrowUp = false;
+      var arrowLeft = false;
+      var arrowDown = false;
+      var arrowRight = false;
+      addEventListener("keydown", function(event) {
+        var keyCode = event.keyCode
+        switch (keyCode) {
+          case 37:
+            arrowLeft = true;
+            break;
+          case 38:
+            arrowUp = true;
+            break;
+          case 39:
+            arrowRight = true;
+            break;
+          case 40:
+            arrowDown = true;
+        }
+      });
+      addEventListener("keyup", function(event) {
+        var keyCode = event.keyCode;
+        switch (keyCode) {
+          case 37:
+            arrowLeft = false;
+            break;
+          case 38:
+            arrowUp = false;
+            break;
+          case 39:
+            arrowRight = false;
+            break;
+          case 40:
+            arrowDown = false;
+        }
+      });
     })
   </script>
 </head>
-<body>
+<body style="overflow: hidden">
   <canvas width="640" height="480"></canvas>
 </body>
 </html>
